@@ -254,7 +254,7 @@
       if (d.fascia === "economico") voce.push("Tra le più economiche in zona.");
       else if (d.fascia === "caro") voce.push("Tra le più care in zona.");
       righe.push(d.fontePrezzo === "O"
-        ? '<p class="avviso-lieve">Prezzo indicativo dell\'operatore senza abbonamento: controlla nell\'app di pagamento</p>'
+        ? `<p class="avviso-lieve">Prezzo indicativo dell'app dell'operatore senza abbonamento${indice && indice.fonte_operatori ? " (" + esc(indice.fonte_operatori) + ")" : ""}: controlla prima di ricaricare</p>`
         : "<p>Prezzo senza abbonamento comunicato alla PUN</p>");
     } else {
       righe.push('<p class="avviso-lieve">Prezzo non comunicato</p>');

@@ -55,15 +55,19 @@ CONNETTORI = {
 
 # Marchi conosciuti: (codice operatore PUN, parola nella ragione sociale) → nome da mostrare
 MARCHI = [
-    ("ENX", r"ENEL\s*X", "Enel X Way"), ("BEC", r"BE\s*CHARGE", "Be Charge"),
+    ("ENX", r"ENEL\s*X", "Enel X Way"), ("BEC", r"BE\s*CHARGE", "Plenitude (ex Be Charge)"),
     ("", r"PLENITUDE|ENI\s*PLENITUDE", "Plenitude"), ("TSL", r"TESLA", "Tesla"),
     ("EWI", r"EWIVA", "Ewiva"), ("", r"\bA2A\b", "A2A"), ("DUF", r"DUFERCO", "Duferco"),
     ("ION", r"IONITY", "Ionity"), ("", r"FREE\s*TO\s*X", "Free To X"), ("", r"ATLANTE", "Atlante"),
     ("", r"ELECTRA", "Electra"), ("", r"\bACEA\b", "Acea"), ("", r"\bHERA\b", "Hera"),
     ("", r"\bIREN\b", "Iren"), ("", r"EDISON", "Edison"), ("", r"NEOGY", "Neogy"),
     ("", r"EMOBITALY", "Emobitaly"), ("", r"FASTNED", "Fastned"), ("", r"ALLEGO", "Allego"),
-    ("", r"ENERCO", "Enercoop"), ("", r"SPARK", "Spark"), ("", r"ZEDDY|ZEST", "Zest"),
-    ("", r"POWY", "Powy"), ("", r"EVWAY|ROUTE\s*220", "EVWay"), ("", r"DRIWE", "DriWe"),
+    ("", r"ENERCOOP", "Enercoop"), ("", r"SPARK", "Spark"), ("", r"ZEDDY|ZEST", "Zest"),
+    ("", r"POWY|THEF\s*CHARGING", "Powy"), ("", r"EVWAY|ROUTE\s*220", "EVWay"), ("", r"DRIWE", "DriWe"),
+    ("", r"ON\s*ELECTRIC", "On Electric Charge"), ("", r"REPOWER", "Repower"), ("", r"FASTWAY", "Fastway"),
+    ("", r"IPLANET", "iPlanet"), ("", r"VIAFAST", "Viafast"), ("", r"SMATRICS|ENBW", "Smatrics EnBW"),
+    ("", r"ELECTRIP", "Electrip"), ("", r"PORSCHE", "Porsche"), ("", r"GASGAS", "GasGas"),
+    ("", r"E-?SHORE", "E-Shore"), ("", r"ENERMIA", "Enermia"), ("", r"WROOM", "Wroom"),
 ]
 FORME = r"\b(S\.?\s?R\.?\s?L\.?\s?S?|S\.?\s?P\.?\s?A\.?|S\.?\s?A\.?\s?S\.?|S\.?\s?N\.?\s?C\.?|SOCIET[AÀ]'?\s+BENEFIT|SB|SOCIET[AÀ]\s+AGRICOLA|ITALIA|ITALY|GMBH|B\.?V\.?)\b\.?"
 
@@ -300,8 +304,12 @@ def prezzo_operatore(tabella, marca, kw, corrente):
     t = tabella.get(marca.lower())
     if not t:
         return None
-    fascia = "AC" if corrente == "AC" else ("HPC" if kw >= 150 else "DC")
-    return _euro_kwh(_num(t.get(fascia)))
+    fasce = ["AC"] if corrente == "AC" else (["HPC", "DC"] if kw >= 150 else ["DC", "HPC"])
+    for fascia in fasce:          # se manca la voce esatta, usa l'altra in corrente continua
+        p = _euro_kwh(_num(t.get(fascia)))
+        if p:
+            return p
+    return None
 
 
 # ---------- Elaborazione ----------

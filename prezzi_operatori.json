@@ -1,5 +1,126 @@
 {
-  "nota": "Prezzi indicativi senza abbonamento (€/kWh, IVA inclusa) per operatore, usati solo dove la PUN non dà il prezzo. AC = corrente alternata, DC = continua sotto 150 kW, HPC = 150 kW e oltre. Il nome dell'operatore è quello mostrato nell'app (es. \"Enel X Way\").",
-  "fonte": "",
-  "operatori": {}
+ "nota": "Prezzi indicativi senza abbonamento (€/kWh) per operatore, usati solo dove la PUN non dà il prezzo. AC = corrente alternata, DC = continua sotto 150 kW, HPC = 150 kW e oltre. Fonte: tabelle dell'Osservatorio Adiconsum, colonna 'App proprietaria' (prezzo con l'app dell'operatore); dove c'è una forbice (es. 0,65-0,71) è usato il valore centrale, dove c'è un prezzo di giorno e uno di notte quello di giorno, dove l'operatore non ha un'app sua la media della tabella. Tesla: prezzo per chi non ha una Tesla. Il nome dell'operatore è quello mostrato nell'app. Da aggiornare a mano ogni mese.",
+ "fonte": "Osservatorio prezzi Adiconsum, settembre 2026",
+ "operatori": {
+  "Plenitude": {
+   "AC": 0.53,
+   "DC": 0.6,
+   "HPC": 0.65
+  },
+  "Enel X Way": {
+   "AC": 0.67,
+   "DC": 0.76,
+   "HPC": 0.83
+  },
+  "A2A": {
+   "AC": 0.68,
+   "DC": 0.72
+  },
+  "Neogy": {
+   "AC": 0.55,
+   "DC": 0.67,
+   "HPC": 0.77
+  },
+  "E-Shore": {
+   "AC": 0.49
+  },
+  "GasGas": {
+   "AC": 0.49
+  },
+  "Enermia": {
+   "AC": 0.49
+  },
+  "Duferco": {
+   "AC": 0.6,
+   "DC": 0.63,
+   "HPC": 0.77
+  },
+  "Acea": {
+   "AC": 0.63,
+   "DC": 0.67
+  },
+  "Emobitaly": {
+   "AC": 0.6,
+   "DC": 0.7
+  },
+  "On Electric Charge": {
+   "AC": 0.65,
+   "DC": 0.95
+  },
+  "Atlante": {
+   "AC": 0.59,
+   "DC": 0.75,
+   "HPC": 0.75
+  },
+  "Powy": {
+   "AC": 0.64,
+   "DC": 0.83
+  },
+  "Repower": {
+   "AC": 0.66
+  },
+  "Hera": {
+   "AC": 0.72,
+   "DC": 0.85
+  },
+  "Electrip": {
+   "AC": 0.6,
+   "DC": 0.65,
+   "HPC": 0.75
+  },
+  "Porsche": {
+   "AC": 0.69,
+   "DC": 0.89,
+   "HPC": 0.89
+  },
+  "EVWay": {
+   "AC": 0.54
+  },
+  "Free To X": {
+   "AC": 0.5,
+   "DC": 0.65,
+   "HPC": 0.79
+  },
+  "Edison": {
+   "AC": 0.6,
+   "DC": 0.89,
+   "HPC": 0.89
+  },
+  "Fastway": {
+   "AC": 0.69
+  },
+  "iPlanet": {
+   "AC": 0.48,
+   "DC": 0.55,
+   "HPC": 0.55
+  },
+  "Ewiva": {
+   "DC": 0.78,
+   "HPC": 0.86
+  },
+  "Viafast": {
+   "DC": 0.79
+  },
+  "Electra": {
+   "DC": 0.69,
+   "HPC": 0.69
+  },
+  "Tesla": {
+   "HPC": 0.59
+  },
+  "Ionity": {
+   "HPC": 0.79
+  },
+  "Smatrics EnBW": {
+   "HPC": 0.56
+  },
+  "Fastned": {
+   "HPC": 0.74
+  },
+  "Plenitude (ex Be Charge)": {
+   "AC": 0.53,
+   "DC": 0.6,
+   "HPC": 0.65
+  }
+ }
 }
