@@ -244,6 +244,13 @@
     if (d.prezzo != null) {
       righe.push(`<p class="pop-prezzo ${d.fascia}"><b>${DL.formattaCent(d.prezzo)}</b> centesimi/kWh</p>`);
       voce.push(`${DL.formattaCent(d.prezzo)} centesimi al chilowattora senza abbonamento.`);
+      const extra = [];
+      if (d.attivazione) extra.push(`${DL.formattaEuro(d.attivazione)} € di attivazione`);
+      if (d.minuto) extra.push(`${DL.formattaEuro(d.minuto, d.minuto < 0.1 ? 3 : 2)} €/min`);
+      if (extra.length) {
+        righe.push(`<p>più ${extra.join(" e ")}</p>`);
+        voce.push(`Più ${extra.join(" e ").replace("€/min", "euro al minuto").replace("€ di", "euro di")}.`);
+      }
       if (d.fascia === "economico") voce.push("Tra le più economiche in zona.");
       else if (d.fascia === "caro") voce.push("Tra le più care in zona.");
       righe.push(d.fontePrezzo === "O"

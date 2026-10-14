@@ -217,6 +217,31 @@ def _euro_kwh(p):
     return round(p, 3) if 0.05 <= p <= 2.5 else None
 
 
+def tariffa_pun(rec, kw, corrente):
+    """Tariffa senza abbonamento comunicata alla PUN (campo punTariffsDetails, con le voci
+    acTariff, dcTariff, hpcTariff e per ognuna energy, activation, parking, time).
+    Usa la voce della potenza del punto (DC da 150 kW = hpc), poi le altre della stessa corrente.
+    Restituisce (€/kWh, € di attivazione, €/minuto) o None."""
+    det = rec.get("punTariffsDetails")
+    if not isinstance(det, dict):
+        return None
+    if corrente == "AC":
+        ordine = ["acTariff"]
+    else:
+        ordine = ["hpcTariff", "dcTariff"] if kw >= 150 else ["dcTariff", "hpcTariff"]
+    for voce in ordine:
+        t = det.get(voce)
+        if not isinstance(t, dict):
+            continue
+        energia = _euro_kwh(_num(t.get("energy")))
+        if energia:
+            att, minuto = _num(t.get("activation")), _num(t.get("time"))
+            return (energia,
+                    round(att, 2) if att and 0 < att < 20 else None,
+                    round(minuto, 3) if minuto and 0 < minuto < 5 else None)
+    return None
+
+
 def prezzo_pun(rec):
     """Prezzo dell'energia senza abbonamento, se il record della PUN lo contiene.
     Cerca tariffe in formato OCPI (elements[].price_components[] di tipo ENERGY) e, in mancanza,
@@ -323,7 +348,9 @@ def costruisci(record, tabella_operatori):
         corrente = "DC" if std in DC or str(princ.get("power_type", "")).upper().startswith("DC") else "AC"
         tipo = CONNETTORI.get(std, std.replace("_", " ").title() if std else "")
         m = marca(rec)
-        prezzo, fonte = prezzo_pun(rec), "P"
+        tar = tariffa_pun(rec, kw, corrente)
+        extra = (tar[1], tar[2]) if tar else (None, None)
+        prezzo, fonte = (tar[0] if tar else prezzo_pun(rec)), "P"
         if prezzo is None:
             prezzo, fonte = prezzo_operatore(tabella_operatori, m, kw, corrente), "O"
 
@@ -343,16 +370,21 @@ def costruisci(record, tabella_operatori):
                 s["h"] = 1
         if s["r"].lower() == m.lower():
             s["r"] = ""
-        # [kW, AC/DC, connettore, posti, posti guasti, prezzo €/kWh o null, fonte prezzo P/O]
-        g = s["e"].setdefault((kw, corrente, tipo), [kw, corrente, tipo, 0, 0, None, None])
+        # [kW, AC/DC, connettore, posti, posti guasti, prezzo €/kWh o null, fonte prezzo P/O,
+        #  € di attivazione o null, €/minuto o null]
+        g = s["e"].setdefault((kw, corrente, tipo), [kw, corrente, tipo, 0, 0, None, None, None, None])
         g[3] += 1
         if stato in GUASTI:
             g[4] += 1
         if prezzo is not None and (g[5] is None or (fonte == "P" and g[6] == "O") or
                                    (fonte == g[6] and prezzo < g[5])):
             g[5], g[6] = prezzo, fonte
+            g[7], g[8] = extra if fonte == "P" else (None, None)
 
     for s in siti.values():
+        for g in s["e"].values():       # niente null inutili in fondo
+            while len(g) > 7 and g[-1] is None:
+                g.pop()
         s["e"] = sorted(s["e"].values(), key=lambda g: (-g[0], g[2]))
         if not s["r"]:
             del s["r"]
@@ -439,7 +471,8 @@ def main():
         if len(siti) < 1000:
             raise ValueError(f"troppo poche colonnine ({len(siti)}): dati della PUN incompleti?")
         diagnosi = {"campi": dict(sorted(conta.items())), "prove_tariffe": prove,
-                    "esempio_mappa": voci[:3], "esempi": record[:5]}
+                    "esempio_mappa": voci[:3], "esempi": record[:5],
+                    "esempi_tariffe": [r for r in record if isinstance(r.get("punTariffsDetails"), dict)][:8]}
         salva(siti, n_prezzi, fonte_op, diagnosi)
     except Exception as ex:
         print(f"PUN non disponibile: {ex}")

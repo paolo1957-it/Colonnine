@@ -36,7 +36,8 @@
   };
   const ULTRA_KW = 150;
 
-  // Ogni gruppo in s.e: [kW, "AC"/"DC", connettore, posti, posti guasti, prezzo €/kWh o null, fonte "P"/"O"]
+  // Ogni gruppo in s.e: [kW, "AC"/"DC", connettore, posti, posti guasti, prezzo €/kWh o null, fonte "P"/"O",
+  //                      € di attivazione, €/minuto] (gli ultimi due solo se comunicati)
   function passaPotenza(g, filtro) {
     if (filtro === "ac") return g[1] === "AC";
     if (filtro === "dc") return g[1] === "DC";
@@ -47,6 +48,9 @@
   // Prezzo in centesimi al kWh, senza decimali (0,519 → "52")
   function formattaCent(p) {
     return p == null ? "–" : String(Math.round(p * 100));
+  }
+  function formattaEuro(e, decimali) {
+    return e.toFixed(decimali ?? 2).replace(".", ",");
   }
   function formattaKw(kw) {
     if (!kw) return "? kW";
@@ -66,14 +70,14 @@
       if (dist > raggio) continue;
       const gruppi = (s.e || []).filter((g) => passaPotenza(g, filtro));
       if (!gruppi.length) continue;
-      let posti = 0, guasti = 0, kw = 0, prezzo = null, fonte = null;
+      let posti = 0, guasti = 0, kw = 0, prezzo = null, fonte = null, attivazione = null, minuto = null;
       for (const g of gruppi) {
         posti += g[3];
         guasti += g[4];
         kw = Math.max(kw, g[0] || 0);
-        if (g[5] != null && (prezzo == null || g[5] < prezzo)) { prezzo = g[5]; fonte = g[6]; }
+        if (g[5] != null && (prezzo == null || g[5] < prezzo)) { prezzo = g[5]; fonte = g[6]; attivazione = g[7] ?? null; minuto = g[8] ?? null; }
       }
-      out.push({ ...s, id: "c/" + s.i, distanza: dist, gruppi, posti, guasti, kw, prezzo, fontePrezzo: fonte, fascia: "nd" });
+      out.push({ ...s, id: "c/" + s.i, distanza: dist, gruppi, posti, guasti, kw, prezzo, fontePrezzo: fonte, attivazione, minuto, fascia: "nd" });
     }
     classifica(out);
     return out;
@@ -140,7 +144,7 @@
   }
 
   const API = {
-    distanza, formattaDistanza, minutiInAuto, POTENZE, ULTRA_KW, passaPotenza, formattaCent, formattaKw,
+    distanza, formattaDistanza, minutiInAuto, POTENZE, ULTRA_KW, passaPotenza, formattaCent, formattaEuro, formattaKw,
     preparaColonnine, classifica, statistiche, tessereNelRaggio, titolo, capitalizza, indirizzo, testoPosti
   };
   if (typeof module !== "undefined" && module.exports) module.exports = API;
