@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Guida a Colonnine</title>
+  <meta name="description" content="Come si usa Colonnine: segnaposto, pulsanti, elenco, impostazioni e provenienza dei dati">
+  <meta name="theme-color" content="#1b4f9c">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+  <style>
+:root {
+  --blu: #1b4f9c;
+  --blu-scuro: #143c78;
+  --libero: #15805a;
+  --attenzione: #b87900;
+  --pieno: #c23a2f;
+  --osm: #5a6a86;
+  --grigio: #7a8291;
+  --bg: #f3f5f9;
+  --superficie: #ffffff;
+  --testo: #172033;
+  --testo-2: #56627a;
+  --bordo: #dce2ec;
+  --ombra: 0 6px 24px rgba(20, 35, 70, .16);
+  --font-display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 14px;
+  --su-colore: #ffffff;
+  --barra: #1b4f9c;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --blu: #4f86dc;
+    --blu-scuro: #3a6fc2;
+    --libero: #3fbf8a;
+    --attenzione: #e3a82d;
+    --pieno: #ec6a5f;
+    --osm: #93a2bf;
+    --grigio: #8e97a6;
+    --bg: #0f1522;
+    --superficie: #182132;
+    --testo: #e8edf6;
+    --testo-2: #9eabc2;
+    --bordo: #2a3650;
+    --ombra: 0 6px 24px rgba(0, 0, 0, .45);
+    --su-colore: #0c1220;
+    --barra: #19386a;
+    color-scheme: dark;
+  }
+  .mappa:not(.satellite) .leaflet-tile-pane { filter: brightness(.72) contrast(1.1) saturate(.7); }
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--testo);
+  font: 15px/1.4 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--blu); outline-offset: 2px; }
+.mk {
+  display: grid; place-items: center;
+  width: 30px; height: 30px; border-radius: 7px;
+  font: 700 16px/1 var(--font-display); color: #fff;
+  background: var(--blu); border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.3);
+}
+.mk.reale { width: auto; min-width: 30px; padding: 0 5px; font-variant-numeric: tabular-nums; }
+.mk.blu { background: var(--blu); }
+.mk.largo { width: 60px; height: 30px; }
+.mk.verde { background: var(--libero); }
+.mk.libero { background: var(--libero); }
+.mk.quasi-pieno { background: var(--attenzione); }
+.mk.pieno { background: var(--pieno); }
+.mk.stallo { width: 14px; height: 14px; border-radius: 3px; border-width: 1.5px; font-size: 0; }
+/* Rettangolo con il prezzo, colore per fascia di prezzo in zona */
+.mk.prezzo { width: auto; min-width: 58px; height: 30px; padding: 0 6px; font-size: 17px; font-variant-numeric: tabular-nums; }
+.mk.economico { background: var(--libero); }
+.mk.medio { background: var(--attenzione); }
+.mk.caro { background: var(--pieno); }
+.mk.nd { width: 18px; height: 18px; border-radius: 5px; background: var(--grigio); font-size: 0; }
+.mk.vecchio { border-style: dashed; opacity: .7; }
+.mk.top { box-shadow: 0 0 0 3px var(--libero), 0 2px 8px rgba(0,0,0,.4); }
+.mk.segn { width: 22px; height: 22px; border-radius: 50%; font-size: 0; background: var(--libero); }
+.mk.segn.occupato { background: var(--pieno); }
+.mk.segn.libero::after {
+  content: ""; position: absolute; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--libero); animation: pulsa 2s ease-out infinite;
+}
+@keyframes pulsa { from { transform: scale(1); opacity: .9; } to { transform: scale(2.2); opacity: 0; } }
+.io {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #2f7cf6; border: 3px solid #fff; box-shadow: 0 0 0 6px rgba(47,124,246,.25);
+}
+.guida-corpo { gap: 18px; font-size: 16px; line-height: 1.5; }
+.guida-corpo h3 { margin: 6px 0 10px; font: 700 22px/1.2 var(--font-display); color: var(--blu); }
+.guida-corpo p { margin: 0 0 10px; }
+.guida-corpo section { scroll-margin-top: 12px; border-top: 1px solid var(--bordo); padding-top: 14px; }
+.g-intro { font-size: 17px; }
+.g-versione { color: var(--testo-2); font-size: 13px; }
+.g-indice { display: flex; flex-wrap: wrap; gap: 6px; }
+.g-indice a {
+  border: 1px solid var(--bordo); border-radius: 999px; padding: 5px 12px;
+  color: var(--testo); text-decoration: none; font-size: 14px; font-weight: 500;
+}
+.g-lista { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.g-lista li { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; }
+.g-lista li > div { min-width: 0; }
+.g-segno { display: flex; justify-content: center; align-items: center; min-height: 32px; }
+.g-segno .mk { position: relative; }
+.g-linea { display: block; width: 64px; height: 6px; border-radius: 3px; background: #1b4f9c; opacity: .6; }
+.g-barra {
+  display: block; max-width: 96px; padding: 6px 8px; border-radius: 8px; background: var(--barra); color: #fff;
+  font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.g-barra.corto { font-size: 13px; font-weight: 600; }
+.g-fab {
+  width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--superficie); color: var(--blu); box-shadow: 0 1px 6px rgba(20,35,70,.25);
+}
+.g-fab.nero { background: #111418; color: #fff; }
+.g-fab.verde { background: var(--libero); color: var(--su-colore); }
+.g-fab.rosso { background: var(--pieno); color: var(--su-colore); }
+.g-fab.blu { background: var(--blu); color: var(--su-colore); }
+.g-def { margin: 0 0 10px; }
+.g-def dt { font: 700 15px/1.2 var(--font-display); letter-spacing: .06em; margin-top: 10px; }
+.g-def dd { margin: 4px 0 0; }
+.g-punti { margin: 0 0 10px; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.mk.prezzo small, .icona.prezzo small { font-size: .62em; margin-left: 1px; opacity: .9; }
+.mk.kw {
+  width: auto; min-width: 44px; height: 24px; padding: 0 5px; border-radius: 6px;
+  background: var(--grigio); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.mk.guasta { border-style: dashed; opacity: .6; }
+
+html, body { height: auto; }
+body { padding: 0 16px; }
+.testa { max-width: 640px; margin: 0 auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 0 14px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--bordo); }
+.testa svg { flex: none; border-radius: 13px; }
+.testa h1 { margin: 0; font: 700 30px/1 var(--font-display); }
+.testa p { margin: 3px 0 0; color: var(--testo-2); font-size: 14px; }
+.apri { margin-left: auto; flex: none; background: var(--blu); color: #fff; text-decoration: none; font-weight: 600; padding: 9px 14px; border-radius: 999px; }
+.guida-corpo { display: flex; flex-direction: column; max-width: 640px; margin: 0 auto; padding: 16px 0 calc(28px + env(safe-area-inset-bottom, 0px)); }
+.guida-corpo a { color: var(--blu); }
+.g-indice a { color: var(--testo); }
+@media (max-width: 420px) { .testa p { display: none; } .testa h1 { font-size: 26px; } }
+
+  </style>
+</head>
+<body>
+  <header class="testa">
+    <svg width="56" height="56" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="#1b4f9c"/><rect x="72" y="72" width="368" height="368" rx="48" fill="none" stroke="#fff" stroke-width="24"/><path d="M200 110v70M312 110v70" stroke="#fff" stroke-width="30" stroke-linecap="round"/><path d="M150 180h212v52a106 106 0 0 1-212 0z" fill="#fff"/><path d="M272 196l-40 56h48l-40 56" fill="none" stroke="#1b4f9c" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M256 338v60" stroke="#fff" stroke-width="30" stroke-linecap="round"/><circle cx="376" cy="376" r="44" fill="#15805a" stroke="#fff" stroke-width="14"/></svg>
+
+    <div>
+      <h1>Colonnine</h1>
+      <p>Guida all'app</p>
+    </div>
+    <a class="apri" href="https://paolo1957-it.github.io/Colonnine/">Apri l'app</a>
+  </header>
+  <main class="guida-corpo">
+        <p class="g-intro"><b>Colonnine</b> ti mostra le colonnine di ricarica per auto elettriche vicino a te, con la marca,
+          quante auto possono ricaricare insieme, la potenza e il prezzo in centesimi al kWh senza abbonamento,
+          dai dati della Piattaforma Unica Nazionale (PUN) del Ministero dell'Ambiente.</p>
+        <p class="g-versione">Guida aggiornata alla versione 3 dell'app (ottobre 2026).</p>
+
+        <nav class="g-indice" aria-label="Argomenti">
+          <a href="#g-mappa">Segnaposto</a><a href="#g-pulsanti">Pulsanti</a><a href="#g-elenco">Elenco e impostazioni</a>
+          <a href="#g-prezzi">I dati</a><a href="#g-consigli">Consigli</a>
+        </nav>
+
+        <section id="g-mappa">
+          <h3>I segnaposto sulla mappa</h3>
+          <ul class="g-lista">
+            <li><span class="g-segno"><span class="mk prezzo economico"><span>45<small>c</small></span></span></span><div><b>Verde</b>: tra le più economiche in zona (il terzo più basso dei prezzi).</div></li>
+            <li><span class="g-segno"><span class="mk prezzo medio"><span>59<small>c</small></span></span></span><div><b>Giallo</b>: prezzo nella media della zona.</div></li>
+            <li><span class="g-segno"><span class="mk prezzo caro"><span>79<small>c</small></span></span></span><div><b>Rosso</b>: tra le più care in zona.</div></li>
+            <li><span class="g-segno"><span class="mk prezzo economico top"><span>39<small>c</small></span></span></span><div><b>Bordo verde</b>: la più economica di tutte entro il raggio.</div></li>
+            <li><span class="g-segno"><span class="mk kw">22 kW</span></span><div><b>Grigio con i kW</b>: colonnina senza prezzo comunicato; il numero è la potenza massima.</div></li>
+            <li><span class="g-segno"><span class="mk prezzo medio guasta"><span>59<small>c</small></span></span></span><div><b>Bordo tratteggiato, più chiaro</b>: tutti i posti sono segnalati fuori servizio.</div></li>
+            <li><span class="g-segno"><span class="io"></span></span><div><b>Punto azzurro</b>: sei tu. Il <b>cerchio tratteggiato</b> è il raggio di ricerca.</div></li>
+          </ul>
+          <p>Il numero colorato è il prezzo in <b>centesimi di euro al kWh</b>, senza abbonamento, per la potenza scelta in alto
+            (se la colonnina ha più prezzi, il più basso).</p>
+          <p>Tocca un segnaposto per aprire il <b>riquadro</b>: marca, indirizzo, quante auto possono ricaricare insieme (<b>posti</b>),
+            potenza, prezzo e una tabella con ogni tipo di presa. L'app lo legge ad alta voce (se la lettura vocale è attiva).
+            Il pulsante <b>Portami qui</b> apre il navigatore.</p>
+        </section>
+
+        <section id="g-pulsanti">
+          <h3>I pulsanti</h3>
+          <ul class="g-lista">
+            <li><span class="g-segno"><span class="g-barra">Cerca un indirizzo…</span></span><div><b>Cerca</b>: scrivi una via o un paese per vedere le colonnine lì invece che intorno a te.</div></li>
+            <li><span class="g-segno"><span class="g-barra corto">Tutte</span></span><div><b>Potenza</b>: <b>Lenta AC</b> (corrente alternata, di solito fino a 22 kW), <b>Veloce DC</b> (corrente continua),
+              <b>Ultra 150+</b> (corrente continua da 150 kW in su) o <b>Tutte</b>.</div></li>
+            <li><span class="g-segno"><span class="g-barra corto">5 km</span></span><div><b>Raggio</b>: quanto lontano cercare, 1, 2, 5 o 10 km.</div></li>
+            <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/></svg></span></span><div><b>Posizione</b>: riporta la mappa su di te e la fa seguire mentre ti sposti.</div></li>
+            <li><span class="g-segno"><span class="g-fab nero"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.6" fill="currentColor"/><circle cx="4.5" cy="12" r="1.6" fill="currentColor"/><circle cx="4.5" cy="18" r="1.6" fill="currentColor"/></svg></span></span><div><b>Elenco</b>: apre la pagina con tutte le colonnine vicine e le impostazioni.</div></li>
+            <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Aggiorna</b>: riscarica subito i dati.</div></li>
+            <li><span class="g-segno"><span class="g-fab occhio"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg></span></span><div><b>Occhio verde</b> (sotto il ?): lo schermo resta sempre acceso perché l'AUTO-REFRESH è attivo. Sparisce con AUTO-REFRESH a 0.</div></li>
+            <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9.2 9a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1.1-1.3 2v.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.3" fill="currentColor"/></svg></span></span><div><b>Guida</b> (in alto a sinistra sulla mappa): apre questa guida dentro l'app.</div></li>
+            <li><span class="g-segno"><span class="g-fab verde"><b style="font:700 22px/1 var(--font-display)">€</b></span></span><div><b>La più economica</b>: porta la mappa sulla colonnina più economica entro il raggio e ne apre il riquadro.</div></li>
+            <li><span class="g-segno"><span class="g-fab blu"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 2.5v4.5M15 2.5v4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M6 7h12v3.5a6 6 0 0 1-12 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12.8 8.8l-2.3 3.4h3l-2.3 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16.5v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span><div><b>La più vicina</b>: porta la mappa sulla colonnina più vicina della potenza scelta che non è segnalata fuori servizio.</div></li>
+          </ul>
+          <p>Per ingrandire o rimpicciolire la mappa usa due dita.</p>
+        </section>
+
+        <section id="g-elenco">
+          <h3>La pagina Elenco e le impostazioni</h3>
+          <p>In alto una riga dice cosa sta facendo l'app e quando sono stati scaricati i dati.</p>
+          <dl class="g-def">
+            <dt>AUTO-REFRESH</dt>
+            <dd>Ogni 30, 60 o 120 secondi l'app torna sulla tua posizione e ricalcola le colonnine vicine. <b>0</b> la spegne. Parte da 120.
+              Finché è attivo, il telefono non va in standby e lo schermo resta acceso (compare l'occhio verde sulla mappa):
+              in macchina tieni il telefono in carica.</dd>
+            <dt>SUONI</dt>
+            <dd>Un <b>bing</b> quando l'aggiornamento è finito; <b>due note che scendono</b> se i dati non si possono scaricare.</dd>
+            <dt>MAPPA</dt>
+            <dd><b>Stradale</b> mostra la cartina di OpenStreetMap; <b>Satellite</b> le foto aeree con i nomi di strade e paesi.</dd>
+            <dt>LETTURA VOCALE</dt>
+            <dd>Quando tocchi un segnaposto, l'app legge ad alta voce marca, indirizzo, posti, potenza, prezzo e distanza.</dd>
+          </dl>
+          <p>Sotto trovi il prezzo più basso e il prezzo medio in centesimi al kWh, quante colonnine e quanti posti ci sono nel raggio, poi l'<b>elenco</b>
+            ordinato <b>per prezzo</b> o <b>per distanza</b>. I filtri <b>Aperte 24 ore</b>, <b>Con prezzo</b> e <b>Senza guasti</b>
+            tolgono dalla mappa e dall'elenco le colonnine che non ti interessano. Tocca una riga per vederla sulla mappa.</p>
+          <p>Le scelte restano memorizzate sul telefono.</p>
+        </section>
+
+        <section id="g-prezzi">
+          <h3>Da dove vengono i dati</h3>
+          <ul class="g-punti">
+            <li>Gli operatori sono obbligati a registrare le colonnine pubbliche sulla <b>PUN</b>, la Piattaforma Unica Nazionale
+              del Ministero dell'Ambiente e della Sicurezza Energetica. L'app scarica i dati da sola più volte al giorno.</li>
+            <li><b>Posti</b> = quante auto possono ricaricare nello stesso momento. Una colonnina con due prese ma un solo posto vale 1.</li>
+            <li>Il <b>prezzo</b> è quello senza abbonamento (pagando con carta o con l'app dell'operatore). Quando la PUN non lo fornisce,
+              l'app mostra il prezzo <b>indicativo</b> dell'app dell'operatore preso dalle tabelle mensili dell'Osservatorio prezzi Adiconsum, segnalato nel riquadro. Con un abbonamento puoi pagare meno.</li>
+            <li>Lo stato <b>fuori servizio</b> è quello del momento in cui sono stati scaricati i dati: può essere cambiato.</li>
+            <li>Il prezzo che vale è sempre quello mostrato dalla colonnina o dall'app con cui paghi.</li>
+            <li>Fonte: PUN – Piattaforma Unica Nazionale dei punti di ricarica (MASE/GSE).</li>
+          </ul>
+        </section>
+
+        <section id="g-consigli">
+          <h3>Consigli</h3>
+          <ul class="g-punti">
+            <li><b>Non usare il telefono mentre guidi.</b> Mettilo su un supporto, usa auto-refresh, suoni e lettura vocale, o fai usare l'app a chi è con te.</li>
+            <li>Su iPhone: in Safari tocca <b>Condividi → Aggiungi alla schermata Home</b> per usarla come un'app.</li>
+            <li>Al primo avvio consenti l'accesso alla <b>posizione</b>. Tocca la mappa una volta per abilitare suoni e voce.</li>
+            <li>Con l'interruttore del <b>silenzioso</b> attivo i suoni non si sentono.</li>
+            <li>Il numero di <b>versione</b> scritto sulla mappa ti dice se hai l'ultimo aggiornamento.</li>
+          </ul>
+        </section>
+      </main>
+</body>
+</html>
