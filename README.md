@@ -29,6 +29,8 @@ Per aggiornare i dati subito: Actions → *Pubblica sito e aggiorna colonnine* �
 - `config.js`: impostazioni iniziali e numero di versione
 - `aggiorna_colonnine.py`, `prezzi_operatori.json`, `.github/workflows/pubblica.yml`: scaricamento dei dati e pubblicazione
 - `sw.js`, `manifest.webmanifest`, `icon.svg`: installazione come app
+- `icon-512.png`, `icon-192.png`, `apple-touch-icon.png`: logo in PNG (dall'icona SVG)
+- `guida.html`: guida all'app come pagina a sé (https://paolo1957-it.github.io/Colonnine/guida.html)
 
 ## Fonte dei dati
 

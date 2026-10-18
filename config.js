@@ -4,7 +4,7 @@
 window.COLONNINE_CONFIG = {
   // Versione dell'app, mostrata in diagonale sulla mappa. Aumentala a ogni aggiornamento
   // (insieme alla cache in sw.js e a ?v= in index.html).
-  versione: "5",
+  versione: "6",
 
   // Raggio di ricerca iniziale in metri (modificabile anche dall'app)
   raggioMetri: 5000,
