@@ -526,7 +526,6 @@
     return true;
   }
   $("btn-guida").addEventListener("click", apriGuida);
-  $("btn-guida-elenco").addEventListener("click", apriGuida);
   $("btn-chiudi-guida").addEventListener("click", chiudiGuida);
   $("guida").querySelectorAll(".g-indice a").forEach((a) => a.addEventListener("click", (e) => {
     e.preventDefault();

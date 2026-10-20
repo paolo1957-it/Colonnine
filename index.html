@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <div class="app">
@@ -64,12 +64,7 @@
       </div>
 
       <div class="fab-sx">
-        <button class="fab" id="btn-guida" type="button" title="Guida all'app" aria-label="Apri la guida all'app" aria-controls="guida" aria-expanded="false">
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9.2 9a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1.1-1.3 2v.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.3" fill="currentColor"/></svg>
-        </button>
-        <button class="fab fab-occhio" id="occhio" type="button" hidden title="Schermo sempre acceso" aria-label="Schermo sempre acceso: AUTO-REFRESH attivo">
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg>
-        </button>
+        <button class="etichetta-attiva" id="occhio" type="button" hidden title="Schermo sempre acceso finché l'AUTO-REFRESH è attivo">Mappa sempre attiva - refresh</button>
       </div>
 
       <div class="fab-azioni">
@@ -85,6 +80,7 @@
     <section class="pannello" id="pannello" aria-label="Colonnine vicine" hidden>
       <header class="pannello-testa">
         <h2>Colonnine vicine</h2>
+        <button class="btn-help" id="btn-guida" type="button" aria-label="Apri la guida all'app" aria-controls="guida" aria-expanded="false">HELP</button>
         <button class="chiudi" id="btn-chiudi" type="button" aria-label="Chiudi l'elenco e torna alla mappa">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
@@ -149,7 +145,6 @@
           (MASE/GSE, dati comunicati dagli operatori, scaricati più volte al giorno).
           Mappa: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>.
         </footer>
-        <button class="link-guida" id="btn-guida-elenco" type="button">Guida all'app →</button>
       </div>
     </section>
 
@@ -200,8 +195,8 @@
             <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2"/></svg></span></span><div><b>Posizione</b>: riporta la mappa su di te e la fa seguire mentre ti sposti.</div></li>
             <li><span class="g-segno"><span class="g-fab nero"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="4.5" cy="6" r="1.6" fill="currentColor"/><circle cx="4.5" cy="12" r="1.6" fill="currentColor"/><circle cx="4.5" cy="18" r="1.6" fill="currentColor"/></svg></span></span><div><b>Elenco</b>: apre la pagina con tutte le colonnine vicine e le impostazioni.</div></li>
             <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><div><b>Aggiorna</b>: riscarica subito i dati.</div></li>
-            <li><span class="g-segno"><span class="g-fab occhio"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg></span></span><div><b>Occhio verde</b> (sotto il ?): lo schermo resta sempre acceso perché l'AUTO-REFRESH è attivo. Sparisce con AUTO-REFRESH a 0.</div></li>
-            <li><span class="g-segno"><span class="g-fab"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9.2 9a2.9 2.9 0 1 1 4.1 2.6c-.8.4-1.3 1.1-1.3 2v.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.3" fill="currentColor"/></svg></span></span><div><b>Guida</b> (in alto a sinistra sulla mappa): apre questa pagina.</div></li>
+            <li><span class="g-segno"><span class="etichetta-attiva g-fab">Mappa sempre attiva - refresh</span></span><div><b>Scritta verde</b> (in alto a sinistra sulla mappa): lo schermo resta sempre acceso perché l'AUTO-REFRESH è attivo. Sparisce con AUTO-REFRESH a 0.</div></li>
+            <li><span class="g-segno"><span class="btn-help g-help">HELP</span></span><div><b>HELP</b> (in alto nella pagina Elenco, accanto alla X): apre questa pagina.</div></li>
             <li><span class="g-segno"><span class="g-fab verde"><b style="font:700 22px/1 var(--font-display)">€</b></span></span><div><b>La più economica</b>: porta la mappa sulla colonnina più economica entro il raggio e ne apre il riquadro.</div></li>
             <li><span class="g-segno"><span class="g-fab blu"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 2.5v4.5M15 2.5v4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M6 7h12v3.5a6 6 0 0 1-12 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12.8 8.8l-2.3 3.4h3l-2.3 3.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 16.5v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span></span><div><b>La più vicina</b>: porta la mappa sulla colonnina più vicina della potenza scelta che non è segnalata fuori servizio.</div></li>
           </ul>
@@ -214,7 +209,7 @@
           <dl class="g-def">
             <dt>AUTO-REFRESH</dt>
             <dd>Ogni 30, 60 o 120 secondi l'app torna sulla tua posizione e ricalcola le colonnine vicine. <b>0</b> la spegne. Parte da 120.
-              Finché è attivo, il telefono non va in standby e lo schermo resta acceso (compare l'occhio verde sulla mappa):
+              Finché è attivo, il telefono non va in standby e lo schermo resta acceso (sulla mappa compare la scritta verde <b>Mappa sempre attiva - refresh</b>):
               in macchina tieni il telefono in carica.</dd>
             <dt>SUONI</dt>
             <dd>Un <b>bing</b> quando l'aggiornamento è finito; <b>due note che scendono</b> se i dati non si possono scaricare.</dd>
@@ -260,9 +255,9 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="config.js?v=6"></script>
-  <script src="core.js?v=6"></script>
-  <script src="app.js?v=6"></script>
+  <script src="config.js?v=7"></script>
+  <script src="core.js?v=7"></script>
+  <script src="app.js?v=7"></script>
   <!-- Statistiche d'uso anonime, senza cookie: https://colonnine.goatcounter.com -->
   <script data-goatcounter="https://colonnine.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
