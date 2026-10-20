@@ -120,15 +120,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   position: absolute; left: 16px; top: 16px; z-index: 900;
   display: flex; flex-direction: column; align-items: center; gap: 12px;
 }
-/* Scritta verde: schermo tenuto acceso (Wake Lock) mentre l'auto-refresh è attivo */
-.etichetta-attiva {
-  border: 0; border-radius: 999px; padding: 7px 12px;
-  background: var(--libero); color: #fff; box-shadow: var(--ombra);
-  font: 600 13px/1.1 var(--font-body); white-space: nowrap;
-}
-.etichetta-attiva.g-fab { width: auto; height: auto; display: inline-block; font-size: 11px; padding: 5px 8px; white-space: normal; text-align: center; line-height: 1.2; }
 .btn-help.g-help { margin-left: 0; min-height: 0; display: inline-block; font-size: 14px; padding: 5px 12px; }
-.g-fab.occhio { background: var(--libero); color: #fff; }
 .fab-azioni {
   position: absolute; left: 16px; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 900;
   display: flex; flex-direction: column; align-items: center; gap: 14px;

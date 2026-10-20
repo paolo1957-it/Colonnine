@@ -151,8 +151,20 @@
       osc.stop(t0 + inizio + durata + 0.05);
     }
   }
+  // Al posto del "bing" l'app dice "Mappa sempre attiva - Refresh" (senza sintesi vocale resta il bing).
+  function parlaAggiornato() {
+    if (!suoniAttivi || document.hidden) return;
+    const s = window.speechSynthesis;
+    if (!s) { suona([[1318.5, 0, 0.6], [2637, 0, 0.25]], 0.3); return; }
+    if (s.speaking) return;   // non interrompe la lettura di un riquadro
+    const u = new SpeechSynthesisUtterance("Mappa sempre attiva - Refresh");
+    u.lang = "it-IT";
+    const v = vocItaliana();
+    if (v) u.voice = v;
+    s.speak(u);
+  }
   const SUONO = {
-    aggiornato: () => suona([[1318.5, 0, 0.6], [2637, 0, 0.25]], 0.3),   // "bing"
+    aggiornato: () => parlaAggiornato(),                                  // voce "Mappa sempre attiva - Refresh"
     errore: () => suona([[392, 0, 0.25], [311, 0.22, 0.45]], 0.3)        // due note che scendono
   };
 
@@ -589,7 +601,7 @@
 
   // ---------- Schermo sempre acceso (Wake Lock) ----------
   let autoAttivo = false, bloccoSchermo = null, richiestaInCorso = false;
-  function mostraOcchio() { $("occhio").hidden = !bloccoSchermo; }
+  function mostraOcchio() { /* nessun segno sulla mappa: l'avviso è la voce a ogni refresh */ }
   async function aggiornaSchermoAcceso() {
     const vuole = autoAttivo && document.visibilityState === "visible";
     if (!vuole) {
@@ -610,7 +622,6 @@
   }
   document.addEventListener("visibilitychange", aggiornaSchermoAcceso);
   document.addEventListener("pointerdown", () => { if (autoAttivo && !bloccoSchermo) aggiornaSchermoAcceso(); }, { passive: true });
-  $("occhio").addEventListener("click", () => toast("Schermo sempre acceso finché l'AUTO-REFRESH è attivo"));
 
   let secAuto = cfg.autoRefreshSecondi ?? 120;
   const salvato = leggiPref("auto", null);
