@@ -1,7 +1,7 @@
 // Colonnine – service worker: rende l'app installabile e apribile offline.
 // Cambia il nome della cache a ogni aggiornamento: così l'iPhone capisce che c'è una versione nuova.
-const CACHE = "colonnine-8";
-const FILE = ["./", "index.html", "style.css", "config.js", "core.js", "app.js", "icon.svg", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "guida.html", "manifest.webmanifest"];
+const CACHE = "colonnine-9";
+const FILE = ["./", "index.html", "style.css", "config.js", "core.js", "app.js", "favicon-64.png", "apple-touch-icon.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "guida.html", "manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
   // "reload": scarica i file dal sito, non dalla memoria del browser

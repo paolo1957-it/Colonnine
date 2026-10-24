@@ -28,9 +28,16 @@ Per aggiornare i dati subito: Actions → *Pubblica sito e aggiorna colonnine* �
 - `app.js`: mappa, GPS, elenco, impostazioni
 - `config.js`: impostazioni iniziali e numero di versione
 - `aggiorna_colonnine.py`, `prezzi_operatori.json`, `.github/workflows/pubblica.yml`: scaricamento dei dati e pubblicazione
-- `sw.js`, `manifest.webmanifest`, `icon.svg`: installazione come app
-- `icon-512.png`, `icon-192.png`, `apple-touch-icon.png`: logo in PNG (dall'icona SVG)
+- `sw.js`, `manifest.webmanifest`: installazione come app
+- `icon-192.png`, `icon-512.png`, `favicon-64.png`, `apple-touch-icon.png`, `icon-maskable-512.png`: logo Qui-Colonnine in PNG
 - `guida.html`: guida all'app come pagina a sé (https://paolo1957-it.github.io/Colonnine/guida.html)
+
+## Notifica sull'iPhone
+
+Alla fine di ogni giro il workflow può mandare una notifica con l'app gratuita **ntfy** (App Store):
+✅ primo aggiornamento riuscito del giorno, ❌ aggiornamento fallito, ⚠️ all'ultimo giro del giorno la PUN
+non ha mai risposto. Per attivarla: Settings → Secrets and variables → Actions → *New repository secret*
+`NTFY_TOPIC` con il nome del canale, e nell'app ntfy iscriversi allo stesso canale. Senza il secret la notifica viene saltata.
 
 ## Fonte dei dati
 
