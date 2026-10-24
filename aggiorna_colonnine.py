@@ -463,7 +463,34 @@ def recupera_dal_sito(sito):
     print(f"  recuperate {len(indice['tessere'])} tessere dell'aggiornamento {indice.get('aggiornato')}")
 
 
+def indice_del_sito(sito):
+    """L'indice già pubblicato (serve a sapere quando era stato l'aggiornamento precedente)."""
+    try:
+        req = urllib.request.Request(sito.rstrip("/") + f"/{CARTELLA}/indice.json", headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except Exception as ex:
+        print(f"  indice del sito non letto: {ex}")
+        return {}
+
+
+def scrivi_esito(nuovi, prima):
+    """Lascia al workflow una riga "nuovi|vecchi;aggiornato;colonnine;aggiornato prima" per la notifica sull'iPhone."""
+    file = os.environ.get("ESITO")
+    if not file:
+        return
+    try:
+        with open(os.path.join(CARTELLA, "indice.json"), encoding="utf-8") as f:
+            ora = json.load(f)
+    except Exception:
+        ora = {}
+    with open(file, "w", encoding="utf-8") as f:
+        f.write(f"{'nuovi' if nuovi else 'vecchi'};{ora.get('aggiornato', '')};{ora.get('colonnine', '')};"
+                f"{prima.get('aggiornato', '')}\n")
+
+
 def main():
+    prima = indice_del_sito(os.environ["SITO"]) if os.environ.get("SITO") else {}
     try:
         print("Scarico i punti di ricarica dalla PUN…")
         pun, voci, record = scarica_pun()
@@ -482,10 +509,12 @@ def main():
                     "esempio_mappa": voci[:3], "esempi": record[:5],
                     "esempi_tariffe": [r for r in record if isinstance(r.get("punTariffsDetails"), dict)][:8]}
         salva(siti, n_prezzi, fonte_op, diagnosi)
+        scrivi_esito(True, prima)
     except Exception as ex:
         print(f"PUN non disponibile: {ex}")
         try:
             recupera_dal_sito(os.environ.get("SITO"))
+            scrivi_esito(False, prima)
         except Exception as ex2:
             print(f"Nessun dato disponibile: {ex2}. Il sito resta com'era.")
             sys.exit(1)

@@ -22,6 +22,11 @@ concurrency:
 jobs:
   pubblica:
     runs-on: ubuntu-latest
+    env:
+      # Notifica sull'iPhone con l'app ntfy: il nome del canale sta nel secret NTFY_TOPIC.
+      # Se il secret non c'è, la notifica viene saltata.
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      ESITO: /tmp/esito.txt
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -49,3 +54,47 @@ jobs:
 
       - id: deploy
         uses: actions/deploy-pages@v5
+
+      # ✅ primo aggiornamento riuscito del giorno · ❌ qualcosa è andato storto ·
+      # ⚠️ all'ultimo giro del giorno (16:17 UTC) la PUN non ha mai risposto: dati vecchi
+      - name: Notifica sull'iPhone
+        if: always() && env.NTFY_TOPIC != ''
+        env:
+          STATO_JOB: ${{ job.status }}
+          ORARIO: ${{ github.event.schedule }}
+          LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          roma = ZoneInfo("Europe/Rome")
+          def giorno(iso):   # "2026-10-24T05:20:00Z" -> data italiana
+              try:
+                  return datetime.fromisoformat(iso.replace("Z", "+00:00")).astimezone(roma).date()
+              except Exception:
+                  return None
+          try:
+              stato, ora, n, prima = open(os.environ["ESITO"], encoding="utf-8").read().strip().split(";")
+          except Exception:
+              stato, ora, n, prima = "", "", "", ""
+          oggi = datetime.now(roma).date()
+          msg = None
+          if os.environ["STATO_JOB"] != "success" or not stato:
+              msg = ("Aggiornamento fallito", "Tocca per vedere cosa è successo su GitHub.", "x", 4)
+          elif stato == "nuovi" and (giorno(prima) or oggi.replace(year=1)) < oggi:
+              msg = ("Colonnine aggiornate", f"Dati della PUN di oggi pubblicati ({n} colonnine).", "white_check_mark", 3)
+          elif os.environ.get("ORARIO") == "17 16 * * *" and stato == "vecchi" and (giorno(ora) or oggi) < oggi:
+              d = giorno(ora)
+              msg = ("Colonnine non aggiornate", f"Oggi la PUN non ha risposto: il sito resta al {d:%d/%m}.", "warning", 4)
+          if msg:
+              titolo, testo, tag, prio = msg
+              corpo = {"topic": os.environ["NTFY_TOPIC"], "title": "Colonnine: " + titolo,
+                       "message": testo, "tags": [tag], "priority": prio, "click": os.environ["LINK"]}
+              req = urllib.request.Request("https://ntfy.sh/", data=json.dumps(corpo).encode(),
+                                           headers={"Content-Type": "application/json"})
+              urllib.request.urlopen(req, timeout=30).read()
+              print("Notifica inviata:", titolo, "-", testo)
+          else:
+              print("Niente da notificare")
+          PY
