@@ -405,3 +405,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pop-tab td:nth-child(2) { text-align: left; }
 .pop-tab th:nth-child(2) { text-align: left; }
 .kpi span small#k-posti { font: 600 12px var(--font-body); color: var(--testo-2); }
+
+/* ---- Condividi su WhatsApp ---- */
+.condividi {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+  padding: 10px 16px; border-radius: 999px; background: #1f8f4e; color: #fff;
+  font-weight: 600; font-size: 15px; text-decoration: none;
+}
+.condividi:hover { background: #18773f; }
+.condividi:focus-visible { outline: 3px solid var(--blu); outline-offset: 2px; }
