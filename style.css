@@ -407,10 +407,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .kpi span small#k-posti { font: 600 12px var(--font-body); color: var(--testo-2); }
 
 /* ---- Condividi su WhatsApp ---- */
+/* Pulsante ovale verde nella testata della pagina Elenco, tra il titolo e HELP */
 .condividi {
-  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
-  padding: 10px 16px; border-radius: 999px; background: #1f8f4e; color: #fff;
-  font-weight: 600; font-size: 15px; text-decoration: none;
+  margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; min-height: 40px; border-radius: 999px; background: #1f8f4e; color: #fff;
+  font: 700 17px/1 var(--font-display); text-decoration: none; white-space: nowrap;
 }
+.condividi + .btn-help { margin-left: 0; }
 .condividi:hover { background: #18773f; }
 .condividi:focus-visible { outline: 3px solid var(--blu); outline-offset: 2px; }
+@media (max-width: 370px) {
+  .pannello-testa { gap: 8px; }
+  .condividi { padding: 6px 10px; }
+  .btn-help { padding: 6px 12px; }
+}
