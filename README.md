@@ -41,5 +41,5 @@ non ha mai risposto. Per attivarla: Settings → Secrets and variables → Actio
 
 ## Fonte dei dati
 
-Colonnine: PUN – Piattaforma Unica Nazionale dei punti di ricarica (MASE/GSE). Mappa: © OpenStreetMap.
+Colonnine: PUN – Piattaforma Unica Nazionale dei punti di ricarica (MASE/GSE). Mappa e ricerca indirizzi: © OpenStreetMap e chi contribuisce (ODbL).
 Il prezzo che vale è sempre quello mostrato dalla colonnina o dall'app con cui paghi.
