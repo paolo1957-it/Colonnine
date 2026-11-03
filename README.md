@@ -1,4 +1,4 @@
-# Colonnine
+# Qui-Colonnine
 
 Web app per il telefono che mostra le colonnine di ricarica per auto elettriche vicino a te: marca, numero di posti
 (auto che possono ricaricare insieme), potenza e prezzo in centesimi/kWh senza abbonamento.
@@ -30,7 +30,7 @@ Per aggiornare i dati subito: Actions → *Pubblica sito e aggiorna colonnine* �
 - `aggiorna_colonnine.py`, `prezzi_operatori.json`, `.github/workflows/pubblica.yml`: scaricamento dei dati e pubblicazione
 - `sw.js`, `manifest.webmanifest`: installazione come app
 - `icon-192.png`, `icon-512.png`, `favicon-64.png`, `apple-touch-icon.png`, `icon-maskable-512.png`: logo Qui-Colonnine in PNG
-- `guida.html`: guida all'app come pagina a sé (https://paolo1957-it.github.io/Colonnine/guida.html)
+- `guida.html`: guida all'app come pagina a sé (https://quivicino.github.io/Colonnine/guida.html)
 
 ## Notifica sull'iPhone
 

@@ -1,6 +1,6 @@
 /*
  * Colonnine – interfaccia: mappa, posizione, caricamento dati, elenco.
- * Stessa struttura di Distributori e PostoLibero.
+ * Stessa struttura di Distributori e Qui-Parking.
  */
 (function () {
   "use strict";
